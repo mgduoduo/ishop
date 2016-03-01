@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/javaee
+        http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    version="3.0">
+
+	<!-- 全站编码过滤器 -->
+	   <filter>
+		 <filter-name>encodingFilter</filter-name>
+		 <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		 <init-param>
+			   <param-name>encoding</param-name>
+			  <param-value>UTF-8</param-value>
+		 </init-param>
+		 <init-param>
+			   <param-name>forceEncoding</param-name>
+			   <param-value>true</param-value>
+		 </init-param>
+	   </filter>
+	   <filter-mapping>
+			 <filter-name>encodingFilter</filter-name>
+		 <url-pattern>/*</url-pattern>
+	   </filter-mapping>
+
+	<!-- session 过滤器 位置靠后执行-->
+	<!--<filter>
+		<filter-name>sessionFilter</filter-name>
+		<filter-class>com.zerol.crm.filter.SessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sessionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+
+	<!--<filter>
+		<filter-name>ConnectionFilter</filter-name>
+		<filter-class>com.zerol.crm.filter.ConnectionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ConnectionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+
+	<!--<filter>
+		<filter-name>OpenEntityManagerInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>OpenEntityManagerInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+
+	<servlet>
+		<!-- 配置DispatcherServlet -->
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+
+		<!-- 指定spring mvc配置文件位置 不指定使用默认情况 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring.xml</param-value>
+		</init-param>
+		<!-- 设置启动顺序 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- 配置映射 servlet-name和DispatcherServlet的servlet一致 -->
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern><!-- 拦截以/所有请求 -->
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>/login.jsp</welcome-file>
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>405</error-code>
+		<location>/login.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/login.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/login.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/login.jsp</location>
+	</error-page>
+
+
+</web-app>

@@ -1,0 +1,1 @@
+alter table tb_trade_order add column EXPRESS_CHARGE double;

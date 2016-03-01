@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 配置文件加载 -->
+	<context:property-placeholder
+		location="classpath:db.properties,classpath:taocrm.properties" />
+
+	<!-- 自动配置扫描范围 -->
+	<context:component-scan base-package="com.zerol.crm"></context:component-scan>
+
+	<!-- 注解 配置 -->
+	<context:annotation-config />
+
+	<!-- 注解式 事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 数据源配置 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.test.user}"></property>
+		<property name="password" value="${jdbc.test.password}"></property>
+		<property name="driverClass" value="${jdbc.test.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.test.jdbcUrl}"></property>
+		<property name="initialPoolSize" value="${jdbc.test.initialPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.test.maxPoolSize}"></property>
+	</bean>
+
+	<!-- 采用 hibernate JPA 操作数据库 -->
+	<bean id="entityManagerFactory" 
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.zerol.crm.entry" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="showSql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="persistenceExceptionTranslationPostProcessor"
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+</beans>
+	
+	

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 配置文件加载 -->
+    <context:property-placeholder
+            location="classpath:db.properties,classpath:taocrm.properties"/>
+
+    <!-- 自动配置扫描范围 -->
+    <context:component-scan base-package="com.zerol.crm"/>
+    <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
+    <!-- 限制对静态资源文件的访问 -->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+
+    <!-- 注解 配置 -->
+    <context:annotation-config/>
+
+    <!-- aop 事务控制: 声明式事务 -->
+    <!--<aop:config>
+        <aop:pointcut id="serviceOperation" expression="execution(* com.zerol.crm.service.*.*(..))" />
+        <aop:advisor pointcut-ref="serviceOperation" advice-ref="txAdvice" />
+    </aop:config>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="create*" propagation="REQUIRED"/>
+            <tx:method name="do*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="query*" read-only="true" />
+            <tx:method name="find*" read-only="true" />
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>-->
+
+    <!-- 注解式 事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--  自定义 拦截器 -->
+    <mvc:interceptors>
+        <!--  session 拦截器-->
+        <bean class="com.zerol.crm.common.interceptor.SessionInterceptor"/>
+
+    </mvc:interceptors>
+
+    <!--  全局异常进行统一处理  -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!--设置日志输出级别，不定义则默认不输出警告等错误日志信息。链接：http://elf8848.iteye.com/blog/875830 -->
+        <property name="warnLogCategory" value="WARN"/>
+        <!-- 默认错误页面，就是不在exceptionMappings指定范围内 -->
+        <property name="defaultErrorView" value="error"></property>
+        <!-- 定义需要特殊处理的异常，如当发生IOException异常时跳转到error/ioexp视图-->
+        <property name="exceptionMappings">
+            <!--key为异常类，可以是全路径，错误页面或Controller路径！会自动跳转到对应url-->
+            <props>
+                <prop key="IOException">redirect:/login</prop>
+                <prop key="java.sql.SQLException">error/sqlexp</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
+
+
+    <!-- 数据源配置 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="${jdbc.user}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="driverClass" value="${jdbc.driverClass}"></property>
+        <property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}"></property>
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+    </bean>
+
+    <!-- 采用 hibernate JPA 操作数据库 : persistence.xml-->
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.zerol.crm.entry"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <!--<property name="persistenceXmlLocation" value="classpath:/META-INF/persistence.xml" />-->
+
+        <property name="jpaProperties">
+            <props>
+                <!--<property name="openjpa.DataCache" value="true(CacheSize=5000, SoftReferenceSize=0)" />
+                <property name="openjpa.RemoteCommitProvider" value="sjvm" />
+                <prop key="openjpa.DataCache">true(CacheSize=5000, SoftReferenceSize=0)</prop>
+                <prop key="openjpa.RemoteCommitProvider">sjvm</prop>
+                &lt;!&ndash;<prop key="openjpa.QueryCache" value="CacheSize=1000, SoftReferenceSize=100"/>&ndash;&gt;
+                <prop key="openjpa.QueryCache">CacheSize=1000, SoftReferenceSize=100</prop>
+                <prop key="provider">org.hibernate.ejb.HibernatePersistence</prop>-->
+
+                <!--<prop key="hibernate.hbm2ddl.auto">create-drop</prop>-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="showSql">true</prop>
+                <prop key="formatSql">false</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="persistenceExceptionTranslationPostProcessor"
+          class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+
+    <!-- 配置freeMarker的模板路径 -->
+    <bean
+            class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="WEB-INF/ftl/"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <!-- freemarker视图解析器 -->
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="cache" value="false"/>
+        <property name="suffix" value=".ftl"/>
+        <!-- <property name="prefix" value="/WEB-INF/ftl/" /> -->
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="exposeSpringMacroHelpers" value="true"/>
+        <property name="exposeRequestAttributes" value="true"/>
+        <property name="exposeSessionAttributes" value="true"/>
+        <!-- 此变量值为pageContext.request, 页面使用方法：rc.contextPath -->
+        <property name="requestContextAttribute" value="rc"/>
+    </bean>
+</beans>
+	
+	
