@@ -200,7 +200,7 @@ public class MainController extends BaseController {
         return mv;
     }
 
-    private void initParams(ModelAndView mv){
+    private void initParams(ModelAndView mv) {
 
         List<Product> productCodeList = prodService.getAllProductList();
         List<MyCode> contactTypeCodeList = codeService.findCodeListByCodeTypID(CommonConstant.CODE_CONTACT_TP);
@@ -240,10 +240,10 @@ public class MainController extends BaseController {
         orderInfo.setRemark(request.getParameter("remark"));
 
         String[] paramArr = request.getParameterValues("refProdNO");
-        if(paramArr!=null && paramArr.length>0){
+        if (paramArr != null && paramArr.length > 0) {
             int paramLength = paramArr.length;
             List<TxnRel> txnFromUIList = new ArrayList<TxnRel>();
-            for(int i=0; i<paramLength; i++){
+            for (int i = 0; i < paramLength; i++) {
                 TxnRel txn = new TxnRel();
                 txn.setRefExpressNO(orderInfo.getExpressNO());
                 txn.setRefProdNO(request.getParameterValues("refProdNO")[i]);
@@ -253,7 +253,7 @@ public class MainController extends BaseController {
             }
 
             orderInfo.setTxnList(txnFromUIList);
-        }else{
+        } else {
             orderInfo.setTxnList(null);
         }
 

@@ -43,15 +43,15 @@ public class LoginController {
      * @param response
      * @return 登陆
      */
-    @RequestMapping(value="/logon.do", method = RequestMethod.POST)
-    public ModelAndView logon(@RequestParam("username")  String username, @RequestParam("password")  String password, HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/logon.do", method = RequestMethod.POST)
+    public ModelAndView logon(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request, HttpServletResponse response) {
         ModelAndView mv = new ModelAndView();
 
         //String username = user.getUsername();//unused : request.getParameter("username");
         //String password = user.getPassword();//unused : request.getParameter("password");
         User loginUser = userService.findUserByUsernamePassword(username, password);
         if (loginUser == null) {
-            request.setAttribute("errInd",CommonConstant.COMMON_BOOLEAN_Y);
+            request.setAttribute("errInd", CommonConstant.COMMON_BOOLEAN_Y);
             String loginUrl = "/login.jsp";
             return new ModelAndView("redirect:" + loginUrl);
         }

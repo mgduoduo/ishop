@@ -75,7 +75,7 @@ public class TxnServiceImpl implements TxnService {
         if (txnRel != null) {
             //1, re-calculate the new total backup count of the product.
             TxnRel txnRelFromDB = this.getTxnByExpressNOAndProdNO(txnRel.getRefExpressNO(), txnRel.getRefProdNO());
-            if(txnRelFromDB!=null){
+            if (txnRelFromDB != null) {
                 prodService.updateTotalBackupCountOfProduct(txnRel.getRefProdNO(), txnRel.getPurchaseCount(), txnRelFromDB.getPurchaseCount());
             }
 

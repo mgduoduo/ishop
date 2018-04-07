@@ -8,13 +8,13 @@ import java.util.List;
 @Repository
 public interface CodeRepository {
 
-   MyCode findCodeByCodeTypIDAndCodeID(String codeTypeID, String codeID);
+    MyCode findCodeByCodeTypIDAndCodeID(String codeTypeID, String codeID);
 
-   List<MyCode> findCodeListByCodeTypID(String codeTypeID);
+    List<MyCode> findCodeListByCodeTypID(String codeTypeID);
 
-   void saveCode(MyCode code);
+    void saveCode(MyCode code);
 
-   void deleteCodeByCodeTypeID(String codeTypeID);
+    void deleteCodeByCodeTypeID(String codeTypeID);
 
-   void deleteCodeByCodeTypeIDAndCodeID(String codeTypeID, String codeID);
+    void deleteCodeByCodeTypeIDAndCodeID(String codeTypeID, String codeID);
 }
