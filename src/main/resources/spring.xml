@@ -111,7 +111,7 @@
                 <prop key="provider">org.hibernate.ejb.HibernatePersistence</prop>-->
 
                 <!--<prop key="hibernate.hbm2ddl.auto">create-drop</prop>-->
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <prop key="showSql">true</prop>
                 <prop key="formatSql">false</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
